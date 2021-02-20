@@ -11,6 +11,7 @@ import './App.css';
 
 function App() {
   const [grid, setGrid] = useState<Array<Array<number>>>([]);
+  const [gridOptimized, setGridOptimized] = useState<Array<Array<number>>>([]);
   const [rows, setRows] = useState<number>(0);
   const [cols, setCols] = useState<number>(0);
   const [running, setRunning] = useState<boolean>(false);
@@ -32,43 +33,93 @@ function App() {
     grid: any
   ) => {
     setGrid(() => [...grid]);
+    setGridOptimized(() => grid.map((rows: any) => rows.map((cell: any) => 2)));
     setRows(rows);
     setCols(cols);
   };
 
   const runningRef = useRef(running);
   runningRef.current = running;
+  const gridRef = useRef(grid);
+  gridRef.current = grid;
+  const gridOptimizedRef = useRef(gridOptimized);
+  gridOptimizedRef.current = gridOptimized;
 
-  const runSimulation = useCallback(() => {
+  const runSimulation = useCallback(async () => {
     if (!runningRef.current) {
       return;
     }
     console.log('Simulation is running...');
 
-    setGrid(currentGrid => {
-      return produce(currentGrid, copyGrid => {
-        currentGrid.map((row, i, rows) => {
-          return row.map((cell, k, cols) => {
-            let neighbours = 0;
-            neighboursCoords.forEach(([x, y]) => {
-              const ii = i + x;
-              const kk = k + y;
-              if (ii >= 0 && ii < rows.length && kk >= 0 && kk < cols.length) {
-                neighbours += currentGrid[ii][kk];
+    await setGrid(currGrid => {
+      let evalCount = 0;
+      let bypassCount = 0;
+      return produce(currGrid, copyGrid => {
+        currGrid.map((row, i, rows) => {
+          row.map((cell, k, cols) => {
+            if (
+              gridOptimizedRef.current.length > 0 &&
+              gridOptimizedRef.current[i][k] === 2
+            ) {
+              evalCount++;
+              let neighbours = 0;
+              neighboursCoords.forEach(([x, y]) => {
+                const ii = i + x;
+                const kk = k + y;
+                if (
+                  ii >= 0 &&
+                  ii < rows.length &&
+                  kk >= 0 &&
+                  kk < cols.length
+                ) {
+                  neighbours += currGrid[ii][kk];
+                }
+              });
+              if (neighbours < 2 || neighbours > 3) {
+                copyGrid[i][k] = 0;
+              } else if (!currGrid[i][k] && neighbours === 3) {
+                copyGrid[i][k] = 1;
               }
-            });
-            if (neighbours < 2 || neighbours > 3) {
-              copyGrid[i][k] = 0;
-            } else if (!currentGrid[i][k] && neighbours === 3) {
-              copyGrid[i][k] = 1;
+            } else {
+              bypassCount++;
             }
-            return null;
+          });
+        });
+        console.log(`evaluation ${evalCount}`, `bybass ${bypassCount}`);
+        if (!evalCount) {
+          // if no evaluation occurs we can stop the simulation
+          setRunning(false);
+        }
+      });
+    });
+
+    await setGridOptimized(currGridOpt => {
+      return produce(currGridOpt, copyGridOpt => {
+        gridRef.current.map((row, i, rows) => {
+          row.map((cell, k, cols) => {
+            if (cell) {
+              copyGridOpt[i][k] = 2;
+              neighboursCoords.forEach(([x, y]) => {
+                const ii = i + x;
+                const kk = k + y;
+                if (
+                  ii >= 0 &&
+                  ii < rows.length &&
+                  kk >= 0 &&
+                  kk < cols.length
+                ) {
+                  copyGridOpt[ii][kk] = 2;
+                }
+              });
+            } else {
+              copyGridOpt[i][k] = 0;
+            }
           });
         });
       });
     });
 
-    setTimeout(() => runSimulation(), 2000);
+    setTimeout(() => runSimulation(), 300);
   }, []);
 
   const toggleSimulation = () => {
