@@ -11,8 +11,8 @@ import './App.css';
 
 function App() {
   const [grid, setGrid] = useState<Array<Array<number>>>([]);
-  const [rows, setRows] = useState<number>(0);
-  const [cols, setCols] = useState<number>(0);
+  const [totalRows, setTotalRows] = useState<number>(0);
+  const [totalCols, setTotalCols] = useState<number>(0);
   const [running, setRunning] = useState<boolean>(false);
   const neighboursCoords = [
     [1, -1],
@@ -24,7 +24,8 @@ function App() {
     [-1, 0],
     [-1, 1],
   ];
-  let cellsToEvaluate = new Set();
+  let cellsToEvaluate = new Set<string>();
+  let cellToEvaluateNextGen = new Set<string>();
 
   const initGridFromFile = (
     startingGeneration: number,
@@ -33,35 +34,43 @@ function App() {
     grid: any
   ) => {
     setGrid(() => [...grid]);
-    setRows(rows);
-    setCols(cols);
+    setTotalRows(rows);
+    setTotalCols(cols);
+    // initialize cells to evaluate
     grid.forEach((row: any, i: number) =>
       row.forEach((cell: any, k: number) => {
-        cellsToEvaluate.add(`${i}/${k}`);
+        if (cell) {
+          addToCellsToEvaluate(i, k, cellsToEvaluate);
+        }
       })
     );
   };
 
   const runningRef = useRef(running);
   runningRef.current = running;
+  const cellToEvaluateNextGenRef = useRef(cellToEvaluateNextGen);
+  cellToEvaluateNextGenRef.current = cellToEvaluateNextGen;
+  const totalRowsRef = useRef(totalRows);
+  totalRowsRef.current = totalRows;
+  const totalColsRef = useRef(totalCols);
+  totalColsRef.current = totalCols;
 
-  const updateCellsToEvalute = (nextGen: any) => {
-    cellsToEvaluate.clear();
-    nextGen.forEach((row: any, i: number, rows: number[][]) =>
-      row.forEach((cell: any, k: number, cols: number[]) => {
-        if (cell) {
-          cellsToEvaluate.add(`${i}/${k}`);
-          neighboursCoords.forEach(([x, y]) => {
-            const ii = i + x;
-            const kk = k + y;
-            if (ii >= 0 && ii < rows.length && kk >= 0 && kk < cols.length) {
-              cellsToEvaluate.add(`${ii}/${kk}`);
-            }
-          });
-        }
-      })
-    );
-    //cellsToEvaluate.forEach(el => console.log('el', el));
+  const addToCellsToEvaluate = (i: number, k: number, cellSet: Set<string>) => {
+    console.log('cellSet', cellSet);
+    cellSet.add(`${i}/${k}`);
+    neighboursCoords.forEach(([x, y]) => {
+      const ii = i + x;
+      const kk = k + y;
+      if (
+        ii >= 0 &&
+        ii < totalRowsRef.current &&
+        kk >= 0 &&
+        kk < totalColsRef.current
+      ) {
+        cellSet.add(`${ii}/${kk}`);
+      }
+    });
+    //console.log('cellToEvaluateNextGen', cellToEvaluateNextGen);
   };
 
   const runSimulation = useCallback(() => {
@@ -72,43 +81,45 @@ function App() {
 
     setGrid(currGrid => {
       let evalCount = 0;
-      let bypassCount = 0;
-      const nextGen = produce(currGrid, copyGrid => {
-        currGrid.map((row, i, rows) => {
-          row.map((cell, k, cols) => {
-            if (cellsToEvaluate.has(`${i}/${k}`)) {
-              evalCount++;
-              let neighbours = 0;
-              neighboursCoords.forEach(([x, y]) => {
-                const ii = i + x;
-                const kk = k + y;
-                if (
-                  ii >= 0 &&
-                  ii < rows.length &&
-                  kk >= 0 &&
-                  kk < cols.length
-                ) {
-                  neighbours += currGrid[ii][kk];
-                }
-              });
-              if (neighbours < 2 || neighbours > 3) {
-                copyGrid[i][k] = 0;
-              } else if (!currGrid[i][k] && neighbours === 3) {
-                copyGrid[i][k] = 1;
-              }
-            } else {
-              bypassCount++;
+      cellToEvaluateNextGenRef.current = new Set<string>();
+      return produce(currGrid, copyGrid => {
+        cellsToEvaluate.forEach((cellToEval: string) => {
+          const [i, k] = cellToEval.split('/').map(el => +el);
+          //console.log('i - k', `${i} - ${k}`);
+          evalCount++;
+          let neighbours = 0;
+          neighboursCoords.forEach(([x, y]) => {
+            const ii = i + x;
+            const kk = k + y;
+            if (
+              ii >= 0 &&
+              ii < totalRowsRef.current &&
+              kk >= 0 &&
+              kk < totalColsRef.current
+            ) {
+              neighbours += currGrid[ii][kk];
             }
           });
+          //console.log('neighbours', neighbours);
+          if (neighbours < 2 || neighbours > 3) {
+            copyGrid[i][k] = 0;
+          } else if (!currGrid[i][k] && neighbours === 3) {
+            copyGrid[i][k] = 1;
+            addToCellsToEvaluate(i, k, cellToEvaluateNextGen);
+          } else if (currGrid[i][k]) {
+            addToCellsToEvaluate(i, k, cellToEvaluateNextGen);
+          }
         });
-        console.log(`evaluation ${evalCount}`, `bybass ${bypassCount}`);
+
+        // clean the old array and copy the new one
+        cellsToEvaluate = new Set(cellToEvaluateNextGen);
+
+        console.log(`evaluation ${evalCount}`);
+        // if no evaluation occurs we can stop the simulation
         if (!evalCount) {
-          // if no evaluation occurs we can stop the simulation
           setRunning(false);
         }
       });
-      updateCellsToEvalute(nextGen);
-      return nextGen;
     });
 
     setTimeout(() => runSimulation(), 1000);
@@ -126,7 +137,7 @@ function App() {
     <div className="App">
       <Header />
       <FileUploader onInitGenLoaded={initGridFromFile} />
-      <Grid rows={rows} cols={cols} grid={grid} />
+      <Grid rows={totalRows} cols={totalCols} grid={grid} />
       <Toolbar running={running} toggleSimulation={toggleSimulation} />
       <Footer />
     </div>
