@@ -11,7 +11,6 @@ import './App.css';
 
 function App() {
   const [grid, setGrid] = useState<Array<Array<number>>>([]);
-  const [gridOptimized, setGridOptimized] = useState<Array<Array<number>>>([]);
   const [rows, setRows] = useState<number>(0);
   const [cols, setCols] = useState<number>(0);
   const [running, setRunning] = useState<boolean>(false);
@@ -25,6 +24,7 @@ function App() {
     [-1, 0],
     [-1, 1],
   ];
+  let cellsToEvaluate = new Set();
 
   const initGridFromFile = (
     startingGeneration: number,
@@ -33,34 +33,50 @@ function App() {
     grid: any
   ) => {
     setGrid(() => [...grid]);
-    setGridOptimized(() => grid.map((rows: any) => rows.map((cell: any) => 2)));
     setRows(rows);
     setCols(cols);
+    grid.forEach((row: any, i: number) =>
+      row.forEach((cell: any, k: number) => {
+        cellsToEvaluate.add(`${i}/${k}`);
+      })
+    );
   };
 
   const runningRef = useRef(running);
   runningRef.current = running;
-  const gridRef = useRef(grid);
-  gridRef.current = grid;
-  const gridOptimizedRef = useRef(gridOptimized);
-  gridOptimizedRef.current = gridOptimized;
 
-  const runSimulation = useCallback(async () => {
+  const updateCellsToEvalute = (nextGen: any) => {
+    cellsToEvaluate.clear();
+    nextGen.forEach((row: any, i: number, rows: number[][]) =>
+      row.forEach((cell: any, k: number, cols: number[]) => {
+        if (cell) {
+          cellsToEvaluate.add(`${i}/${k}`);
+          neighboursCoords.forEach(([x, y]) => {
+            const ii = i + x;
+            const kk = k + y;
+            if (ii >= 0 && ii < rows.length && kk >= 0 && kk < cols.length) {
+              cellsToEvaluate.add(`${ii}/${kk}`);
+            }
+          });
+        }
+      })
+    );
+    //cellsToEvaluate.forEach(el => console.log('el', el));
+  };
+
+  const runSimulation = useCallback(() => {
     if (!runningRef.current) {
       return;
     }
     console.log('Simulation is running...');
 
-    await setGrid(currGrid => {
+    setGrid(currGrid => {
       let evalCount = 0;
       let bypassCount = 0;
-      return produce(currGrid, copyGrid => {
+      const nextGen = produce(currGrid, copyGrid => {
         currGrid.map((row, i, rows) => {
           row.map((cell, k, cols) => {
-            if (
-              gridOptimizedRef.current.length > 0 &&
-              gridOptimizedRef.current[i][k] === 2
-            ) {
+            if (cellsToEvaluate.has(`${i}/${k}`)) {
               evalCount++;
               let neighbours = 0;
               neighboursCoords.forEach(([x, y]) => {
@@ -91,35 +107,11 @@ function App() {
           setRunning(false);
         }
       });
+      updateCellsToEvalute(nextGen);
+      return nextGen;
     });
 
-    await setGridOptimized(currGridOpt => {
-      return produce(currGridOpt, copyGridOpt => {
-        gridRef.current.map((row, i, rows) => {
-          row.map((cell, k, cols) => {
-            if (cell) {
-              copyGridOpt[i][k] = 2;
-              neighboursCoords.forEach(([x, y]) => {
-                const ii = i + x;
-                const kk = k + y;
-                if (
-                  ii >= 0 &&
-                  ii < rows.length &&
-                  kk >= 0 &&
-                  kk < cols.length
-                ) {
-                  copyGridOpt[ii][kk] = 2;
-                }
-              });
-            } else {
-              copyGridOpt[i][k] = 0;
-            }
-          });
-        });
-      });
-    });
-
-    setTimeout(() => runSimulation(), 300);
+    setTimeout(() => runSimulation(), 1000);
   }, []);
 
   const toggleSimulation = () => {
