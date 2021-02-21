@@ -69,7 +69,7 @@ const StyledDropzone: React.FC<{
   } = useDropzone({ onDrop });
 
   return (
-    <div className="container">
+    <div className="loader">
       <Container
         {...getRootProps({ isDragActive, isDragAccept, isDragReject })}
       >

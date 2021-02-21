@@ -11,7 +11,7 @@ const CellGrid: React.FC<{
         width: 30,
         height: 30,
         backgroundColor: props.alive ? '#1EE892' : 'transparent',
-        border: '1px solid black',
+        border: '1px solid #696969',
       }}
     >
       {/*{props.i}/{props.k}*/}

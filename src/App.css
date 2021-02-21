@@ -4,18 +4,55 @@
   box-sizing: border-box;
 }
 
-.App {
-  text-align: center;
+body {
+  font-family: Roboto, sans-serif;
 }
 
-
-.App-header {
-  background-color: #282c34;
+.App {
+  display: grid;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  grid-template-columns: 50px 1fr 1fr 50px;
+  grid-template-rows: auto auto 1fr auto auto;
+  grid-template-areas:
+    "header header header header"
+    "loader loader loader loader"
+    ". main main ."
+    ". toolbar toolbar ."
+    "footer footer footer footer";
+}
+
+.header {
+  grid-area: header;
+  background-color: #008FEB;
+  text-align: center;
+  font-size: 30px;
   color: white;
+  padding: 20px;
+}
+
+.loader {
+  grid-area: loader;
+  align-items: center;
+}
+
+.main-grid {
+  padding: 30px;
+  grid-area: main;
+  background-color: transparent;
+  justify-content: center;
+}
+
+.toolbar {
+  padding: 20px;
+  grid-area: toolbar;
+  align-items: center;
+}
+
+.footer {
+  grid-area: footer;
+  background-color: #008FEB;
+  text-align: center;
+  color: white;
+  align-items: flex-end;
+  padding: 40px 0;
 }

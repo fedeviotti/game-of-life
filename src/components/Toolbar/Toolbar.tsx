@@ -9,7 +9,7 @@ const Toolbar: React.FC<{
   };
 
   return (
-    <div>
+    <div className="toolbar">
       <button onClick={toggleSimulation}>
         {props.running ? 'Stop' : 'Start'}
       </button>

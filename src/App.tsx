@@ -1,9 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { produce } from 'immer';
 
-import Header from '../src/components/Header/Header';
 import Grid from './components/Grid/Grid';
-import Footer from './components/Footer/Footer';
 import Toolbar from './components/Toolbar/Toolbar';
 
 import './App.css';
@@ -135,11 +133,11 @@ function App() {
 
   return (
     <div className="App">
-      <Header />
+      <div className="header">Game of Life</div>
       <StyledDropzone onInitGenLoaded={initGridFromFile} />
       <Grid rows={totalRows} cols={totalCols} grid={grid} />
       <Toolbar running={running} toggleSimulation={toggleSimulation} />
-      <Footer />
+      <div className="footer">Enjoy</div>
     </div>
   );
 }
