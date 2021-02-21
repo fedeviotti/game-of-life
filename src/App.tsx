@@ -4,10 +4,10 @@ import { produce } from 'immer';
 import Header from '../src/components/Header/Header';
 import Grid from './components/Grid/Grid';
 import Footer from './components/Footer/Footer';
-import FileUploader from './components/FileUploader/FileUpoloader';
 import Toolbar from './components/Toolbar/Toolbar';
 
 import './App.css';
+import StyledDropzone from './components/FileUploader/StyledDropzone';
 
 function App() {
   const [grid, setGrid] = useState<Array<Array<number>>>([]);
@@ -136,7 +136,7 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <FileUploader onInitGenLoaded={initGridFromFile} />
+      <StyledDropzone onInitGenLoaded={initGridFromFile} />
       <Grid rows={totalRows} cols={totalCols} grid={grid} />
       <Toolbar running={running} toggleSimulation={toggleSimulation} />
       <Footer />
