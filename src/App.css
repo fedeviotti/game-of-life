@@ -49,10 +49,10 @@ body {
 }
 
 .footer {
+  height: 100%;
   grid-area: footer;
   background-color: #008FEB;
   text-align: center;
   color: white;
-  align-items: flex-end;
-  padding: 40px 0;
+  padding: 20px;
 }
