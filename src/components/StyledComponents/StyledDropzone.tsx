@@ -2,20 +2,7 @@ import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 
-const getColor = (props: any) => {
-  if (props.isDragAccept) {
-    return '#00e676';
-  }
-  if (props.isDragReject) {
-    return '#ff1744';
-  }
-  if (props.isDragActive) {
-    return '#2196f3';
-  }
-  return '#eeeeee';
-};
-
-const Container = styled.div`
+const StyledDropzoneContainer = styled.div<{ isDragReject: any }>`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -23,21 +10,26 @@ const Container = styled.div`
   padding: 20px;
   border-width: 2px;
   border-radius: 2px;
-  border-color: ${props => getColor(props)};
+  border-color: ${props =>
+    props.isDragReject ? 'var(--color-error)' : 'var(--color-grey-ligth)'};
   border-style: dashed;
   background-color: #fafafa;
   color: #bdbdbd;
   outline: none;
   transition: border 0.24s ease-in-out;
+  grid-area: load;
 `;
-const StyledDropzone: React.FC<{
+
+export interface StyledDropzoneProps {
   onInitGenLoaded: (
     startingGeneration: number,
     rows: number,
     cols: number,
-    grid: Array<Array<number>>
+    grid: boolean[][]
   ) => void;
-}> = props => {
+}
+
+const StyledDropzone: React.FC<StyledDropzoneProps> = props => {
   const onDrop = useCallback(acceptedFiles => {
     acceptedFiles.forEach((file: Blob) => {
       const reader = new FileReader();
@@ -51,8 +43,8 @@ const StyledDropzone: React.FC<{
         const generationNumber =
           Number(generation.slice(generation.indexOf(' ') + 1, -1)) | 0;
         const [rows, cols] = rowsAndCols.split(' ').map(el => Number(el) | 0);
-        const initialGrid = grid.map<Array<number>>(row =>
-          row.split('').map(value => (value === '*' ? 1 : 0))
+        const initialGrid = grid.map<boolean[]>(row =>
+          row.split('').map(value => value === '*')
         );
 
         props.onInitGenLoaded(generationNumber, rows, cols, initialGrid);
@@ -69,16 +61,13 @@ const StyledDropzone: React.FC<{
   } = useDropzone({ onDrop });
 
   return (
-    <div className="loader">
-      <Container
-        {...getRootProps({ isDragActive, isDragAccept, isDragReject })}
-      >
-        <input {...getInputProps()} />
-        <p>
-          Trascina il file qui dentro, oppure clicca per selezionare il file
-        </p>
-      </Container>
-    </div>
+    <StyledDropzoneContainer
+      isDragReject={isDragReject}
+      {...getRootProps({ isDragActive, isDragAccept })}
+    >
+      <input {...getInputProps()} />
+      <p>Drag 'n' drop a template here, or click to select a template</p>
+    </StyledDropzoneContainer>
   );
 };
 

@@ -1,30 +1,20 @@
 import React from 'react';
 import CellGrid from './CellGrid/CellGrid';
+import StyledGrid, { GridProps } from '../StyledComponents/StyledGrid';
 
-const Grid: React.FC<{
-  rows: number;
-  cols: number;
-  grid: any;
-}> = props => {
+const Grid: React.FC<GridProps> = props => {
   return (
-    <div
-      className="main-grid"
-      style={{
-        display: 'inline-grid',
-        gridTemplateColumns: `repeat(${props.cols}, 30px)`,
-        gridTemplateRows: `repeat(${props.rows}, 30px)`,
-      }}
-    >
+    <StyledGrid rows={props.rows} cols={props.cols}>
       {props.grid.length ? (
-        props.grid.map((row: any, i: number) =>
-          row.map((value: any, k: number) => {
+        props.grid.map((row: boolean[], i: number) =>
+          row.map((value: boolean, k: number) => {
             return <CellGrid key={`${i}-${k}`} alive={value} i={i} k={k} />;
           })
         )
       ) : (
-        <div>Carica il file per visualizzare la griglia...</div>
+        <div>Upload a template to start the game...</div>
       )}
-    </div>
+    </StyledGrid>
   );
 };
 

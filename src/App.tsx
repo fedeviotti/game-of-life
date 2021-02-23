@@ -1,17 +1,19 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { produce } from 'immer';
 
+import StyledDropzone from './components/StyledComponents/StyledDropzone';
+import StyledHeader from './components/StyledComponents/StyledHeader';
+import StyledFooter from './components/StyledComponents/StyledFooter';
+import StyledApp from './components/StyledComponents/StyledApp';
 import Grid from './components/Grid/Grid';
 import Toolbar from './components/Toolbar/Toolbar';
 
-import './App.css';
-import StyledDropzone from './components/FileUploader/StyledDropzone';
-
 function App() {
-  const [grid, setGrid] = useState<Array<Array<number>>>([]);
+  const [grid, setGrid] = useState<boolean[][]>([]);
   const [totalRows, setTotalRows] = useState<number>(0);
   const [totalCols, setTotalCols] = useState<number>(0);
   const [running, setRunning] = useState<boolean>(false);
+  const [simulationTimeout, setSimulationTimeout] = useState<number>(500);
   const neighboursCoords = [
     [1, -1],
     [1, 0],
@@ -22,21 +24,21 @@ function App() {
     [-1, 0],
     [-1, 1],
   ];
-  let cellsToEvaluate = new Set<string>();
-  let cellToEvaluateNextGen = new Set<string>();
+  let cellsToEvaluate: Set<string> = new Set<string>();
+  let cellToEvaluateNextGen: Set<string> = new Set<string>();
 
   const initGridFromFile = (
     startingGeneration: number,
     rows: number,
     cols: number,
-    grid: any
+    grid: boolean[][]
   ) => {
     setGrid(() => [...grid]);
     setTotalRows(rows);
     setTotalCols(cols);
     // initialize cells to evaluate
-    grid.forEach((row: any, i: number) =>
-      row.forEach((cell: any, k: number) => {
+    grid.forEach((row: boolean[], i: number) =>
+      row.forEach((cell: boolean, k: number) => {
         if (cell) {
           addToCellsToEvaluate(i, k, cellsToEvaluate);
         }
@@ -52,9 +54,10 @@ function App() {
   totalRowsRef.current = totalRows;
   const totalColsRef = useRef(totalCols);
   totalColsRef.current = totalCols;
+  const simulationTimeoutRef = useRef(simulationTimeout);
+  simulationTimeoutRef.current = simulationTimeout;
 
   const addToCellsToEvaluate = (i: number, k: number, cellSet: Set<string>) => {
-    console.log('cellSet', cellSet);
     cellSet.add(`${i}/${k}`);
     neighboursCoords.forEach(([x, y]) => {
       const ii = i + x;
@@ -68,7 +71,6 @@ function App() {
         cellSet.add(`${ii}/${kk}`);
       }
     });
-    //console.log('cellToEvaluateNextGen', cellToEvaluateNextGen);
   };
 
   const runSimulation = useCallback(() => {
@@ -83,7 +85,6 @@ function App() {
       return produce(currGrid, copyGrid => {
         cellsToEvaluate.forEach((cellToEval: string) => {
           const [i, k] = cellToEval.split('/').map(el => +el);
-          //console.log('i - k', `${i} - ${k}`);
           evalCount++;
           let neighbours = 0;
           neighboursCoords.forEach(([x, y]) => {
@@ -95,14 +96,17 @@ function App() {
               kk >= 0 &&
               kk < totalColsRef.current
             ) {
-              neighbours += currGrid[ii][kk];
+              //neighbours += currGrid[ii][kk] ? 1 : 0;
+              if (currGrid[ii][kk]) {
+                neighbours++;
+              }
             }
           });
-          //console.log('neighbours', neighbours);
+
           if (neighbours < 2 || neighbours > 3) {
-            copyGrid[i][k] = 0;
+            copyGrid[i][k] = false;
           } else if (!currGrid[i][k] && neighbours === 3) {
-            copyGrid[i][k] = 1;
+            copyGrid[i][k] = true;
             addToCellsToEvaluate(i, k, cellToEvaluateNextGen);
           } else if (currGrid[i][k]) {
             addToCellsToEvaluate(i, k, cellToEvaluateNextGen);
@@ -112,7 +116,6 @@ function App() {
         // clean the old array and copy the new one
         cellsToEvaluate = new Set(cellToEvaluateNextGen);
 
-        console.log(`evaluation ${evalCount}`);
         // if no evaluation occurs we can stop the simulation
         if (!evalCount) {
           setRunning(false);
@@ -120,7 +123,7 @@ function App() {
       });
     });
 
-    setTimeout(() => runSimulation(), 1000);
+    setTimeout(() => runSimulation(), simulationTimeoutRef.current);
   }, []);
 
   const toggleSimulation = () => {
@@ -131,14 +134,23 @@ function App() {
     }
   };
 
+  const changeSpeedSimulation = (delta: number) => {
+    // increase/decrease timeout
+    setSimulationTimeout(() => delta + simulationTimeout);
+  };
+
   return (
-    <div className="App">
-      <div className="header">Game of Life</div>
+    <StyledApp>
+      <StyledHeader>Game of Life</StyledHeader>
       <StyledDropzone onInitGenLoaded={initGridFromFile} />
       <Grid rows={totalRows} cols={totalCols} grid={grid} />
-      <Toolbar running={running} toggleSimulation={toggleSimulation} />
-      <div className="footer">Enjoy</div>
-    </div>
+      <Toolbar
+        running={running}
+        toggleSimulation={toggleSimulation}
+        changeSpeedSimulation={changeSpeedSimulation}
+      />
+      <StyledFooter>Enjoy</StyledFooter>
+    </StyledApp>
   );
 }
 

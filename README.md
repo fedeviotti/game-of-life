@@ -17,4 +17,4 @@ Per avviare il programma in locale
 
 ##Deploy
 
-La versione deployata del programms si trova al seguente [link](http://fedeviotti.com)
+La versione deployata del programma si trova al seguente [link](http://fedeviotti.com)

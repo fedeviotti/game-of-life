@@ -1,21 +1,13 @@
 import React from 'react';
+import StyledCellGrid, {
+  CellGridProps,
+} from '../../StyledComponents/StyledCellGrid';
 
-const CellGrid: React.FC<{
-  alive: number;
-  i: number;
-  k: number;
-}> = props => {
+const CellGrid: React.FC<CellGridProps> = props => {
   return (
-    <div
-      style={{
-        width: 30,
-        height: 30,
-        backgroundColor: props.alive ? '#1EE892' : 'transparent',
-        border: '1px solid #696969',
-      }}
-    >
+    <StyledCellGrid alive={props.alive}>
       {/*{props.i}/{props.k}*/}
-    </div>
+    </StyledCellGrid>
   );
 };
 
