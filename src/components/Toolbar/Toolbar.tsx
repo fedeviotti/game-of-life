@@ -12,6 +12,9 @@ const Toolbar: React.FC<ToolbarProps> = props => {
   const slowDownSimulation = () => {
     props.changeSpeedSimulation(100);
   };
+  const clearSimulation = () => {
+    props.clearSimulation(true);
+  };
 
   return (
     <StyledToolbar>
@@ -20,6 +23,7 @@ const Toolbar: React.FC<ToolbarProps> = props => {
       </StyledButton>
       <StyledButton onClick={speedUpSimulation}>Speed Up</StyledButton>
       <StyledButton onClick={slowDownSimulation}>Slow Down</StyledButton>
+      <StyledButton onClick={clearSimulation}>Reset</StyledButton>
     </StyledToolbar>
   );
 };

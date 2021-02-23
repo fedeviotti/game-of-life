@@ -10,6 +10,7 @@ import Toolbar from './components/Toolbar/Toolbar';
 
 function App() {
   const [grid, setGrid] = useState<boolean[][]>([]);
+  const [lastGrid, setLastGrid] = useState<boolean[][]>([]);
   const [totalRows, setTotalRows] = useState<number>(0);
   const [totalCols, setTotalCols] = useState<number>(0);
   const [running, setRunning] = useState<boolean>(false);
@@ -34,6 +35,7 @@ function App() {
     gridFromFile: boolean[][]
   ) => {
     setGrid(gridFromFile);
+    setLastGrid(gridFromFile);
     setTotalRows(rows);
     setTotalCols(cols);
     // initialize cells to evaluate
@@ -50,8 +52,8 @@ function App() {
   runningRef.current = running;
   const gridRef = useRef(grid);
   gridRef.current = grid;
-  const cellToEvaluateNextGenRef = useRef(cellToEvaluateNextGen);
-  cellToEvaluateNextGenRef.current = cellToEvaluateNextGen;
+  //const cellToEvaluateNextGenRef = useRef(cellToEvaluateNextGen);
+  //cellToEvaluateNextGenRef.current = cellToEvaluateNextGen;
   const totalRowsRef = useRef(totalRows);
   totalRowsRef.current = totalRows;
   const totalColsRef = useRef(totalCols);
@@ -133,6 +135,14 @@ function App() {
     }
   };
 
+  const clearSimulation = (reloadLast: boolean) => {
+    setRunning(false);
+    runningRef.current = false;
+    setGrid(reloadLast ? lastGrid : []);
+    cellsToEvaluate.clear();
+    cellToEvaluateNextGen.clear();
+  };
+
   const changeSpeedSimulation = (delta: number) => {
     // increase/decrease timeout
     setSimulationTimeout(() => delta + simulationTimeout);
@@ -141,12 +151,16 @@ function App() {
   return (
     <StyledApp>
       <StyledHeader>Game of Life</StyledHeader>
-      <StyledDropzone onInitGenLoaded={initGridFromFile} />
+      <StyledDropzone
+        onInitGenLoaded={initGridFromFile}
+        clearSimulation={clearSimulation}
+      />
       <Grid rows={totalRows} cols={totalCols} grid={grid} />
       <Toolbar
         running={running}
         toggleSimulation={toggleSimulation}
         changeSpeedSimulation={changeSpeedSimulation}
+        clearSimulation={clearSimulation}
       />
       <StyledFooter>Enjoy</StyledFooter>
     </StyledApp>

@@ -27,6 +27,7 @@ export interface StyledDropzoneProps {
     cols: number,
     grid: boolean[][]
   ) => void;
+  clearSimulation: (reloadLast: boolean) => void;
 }
 
 const StyledDropzone: React.FC<StyledDropzoneProps> = props => {
@@ -37,6 +38,7 @@ const StyledDropzone: React.FC<StyledDropzoneProps> = props => {
       reader.onabort = () => console.log('file reading was aborted');
       reader.onerror = () => console.log('file reading has failed');
       reader.onload = () => {
+        props.clearSimulation(false);
         const binaryStr = String(reader.result);
         // Read the string and extract the values for initial state
         const [generation, rowsAndCols, ...grid] = binaryStr?.split(/\n/);
@@ -46,7 +48,6 @@ const StyledDropzone: React.FC<StyledDropzoneProps> = props => {
         const initialGrid = grid.map<boolean[]>(row =>
           row.split('').map(value => value === '*')
         );
-
         props.onInitGenLoaded(generationNumber, rows, cols, initialGrid);
       };
       reader.readAsText(file);
