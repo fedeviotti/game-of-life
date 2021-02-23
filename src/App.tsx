@@ -31,13 +31,13 @@ function App() {
     startingGeneration: number,
     rows: number,
     cols: number,
-    grid: boolean[][]
+    gridFromFile: boolean[][]
   ) => {
-    setGrid(grid);
+    setGrid(gridFromFile);
     setTotalRows(rows);
     setTotalCols(cols);
     // initialize cells to evaluate
-    grid.forEach((row: boolean[], i: number) =>
+    gridFromFile.forEach((row: boolean[], i: number) =>
       row.forEach((cell: boolean, k: number) => {
         if (cell) {
           addToCellsToEvaluate(i, k, cellsToEvaluate);
