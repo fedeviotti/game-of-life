@@ -13,7 +13,7 @@ function App() {
   const [totalRows, setTotalRows] = useState<number>(0);
   const [totalCols, setTotalCols] = useState<number>(0);
   const [running, setRunning] = useState<boolean>(false);
-  const [simulationTimeout, setSimulationTimeout] = useState<number>(500);
+  const [simulationTimeout, setSimulationTimeout] = useState<number>(200);
   const neighboursCoords = [
     [1, -1],
     [1, 0],
@@ -33,7 +33,7 @@ function App() {
     cols: number,
     grid: boolean[][]
   ) => {
-    setGrid(() => [...grid]);
+    setGrid(grid);
     setTotalRows(rows);
     setTotalCols(cols);
     // initialize cells to evaluate
@@ -48,6 +48,8 @@ function App() {
 
   const runningRef = useRef(running);
   runningRef.current = running;
+  const gridRef = useRef(grid);
+  gridRef.current = grid;
   const cellToEvaluateNextGenRef = useRef(cellToEvaluateNextGen);
   cellToEvaluateNextGenRef.current = cellToEvaluateNextGen;
   const totalRowsRef = useRef(totalRows);
@@ -79,49 +81,46 @@ function App() {
     }
     console.log('Simulation is running...');
 
-    setGrid(currGrid => {
+    //cellToEvaluateNextGenRef.current = new Set<string>();
+    const result = produce(gridRef.current, copyGrid => {
       let evalCount = 0;
-      cellToEvaluateNextGenRef.current = new Set<string>();
-      return produce(currGrid, copyGrid => {
-        cellsToEvaluate.forEach((cellToEval: string) => {
-          const [i, k] = cellToEval.split('/').map(el => +el);
-          evalCount++;
-          let neighbours = 0;
-          neighboursCoords.forEach(([x, y]) => {
-            const ii = i + x;
-            const kk = k + y;
-            if (
-              ii >= 0 &&
-              ii < totalRowsRef.current &&
-              kk >= 0 &&
-              kk < totalColsRef.current
-            ) {
-              //neighbours += currGrid[ii][kk] ? 1 : 0;
-              if (currGrid[ii][kk]) {
-                neighbours++;
-              }
+      cellsToEvaluate.forEach((cellToEval: string) => {
+        const [i, k] = cellToEval.split('/').map(el => +el);
+        evalCount++;
+        let neighbours = 0;
+        neighboursCoords.forEach(([x, y]) => {
+          const ii = i + x;
+          const kk = k + y;
+          if (
+            ii >= 0 &&
+            ii < totalRowsRef.current &&
+            kk >= 0 &&
+            kk < totalColsRef.current
+          ) {
+            if (gridRef.current[ii][kk]) {
+              neighbours++;
             }
-          });
-
-          if (neighbours < 2 || neighbours > 3) {
-            copyGrid[i][k] = false;
-          } else if (!currGrid[i][k] && neighbours === 3) {
-            copyGrid[i][k] = true;
-            addToCellsToEvaluate(i, k, cellToEvaluateNextGen);
-          } else if (currGrid[i][k]) {
-            addToCellsToEvaluate(i, k, cellToEvaluateNextGen);
           }
         });
-
-        // clean the old array and copy the new one
-        cellsToEvaluate = new Set(cellToEvaluateNextGen);
-
-        // if no evaluation occurs we can stop the simulation
-        if (!evalCount) {
-          setRunning(false);
+        if (neighbours < 2 || neighbours > 3) {
+          copyGrid[i][k] = false;
+        } else if (!gridRef.current[i][k] && neighbours === 3) {
+          copyGrid[i][k] = true;
+          addToCellsToEvaluate(i, k, cellToEvaluateNextGen);
+        } else if (gridRef.current[i][k]) {
+          addToCellsToEvaluate(i, k, cellToEvaluateNextGen);
         }
       });
+
+      // clean the old array and copy the new one
+      cellsToEvaluate = new Set(cellToEvaluateNextGen);
+
+      // if no evaluation occurs we can stop the simulation
+      if (!evalCount) {
+        setRunning(false);
+      }
     });
+    setGrid(result);
 
     setTimeout(() => runSimulation(), simulationTimeoutRef.current);
   }, []);
