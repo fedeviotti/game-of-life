@@ -8,11 +8,10 @@ export interface GridProps {
 }
 
 const StyledGrid = styled.div<{ cols: number; rows: number }>`
-  padding: 30px;
   grid-area: main;
-  background-color: transparent;
-  justify-content: center;
   display: inline-grid;
+  justify-content: center;
+  align-content: center;
   grid-template-rows: ${props => `repeat(${props.rows}, 30px)`};
   grid-template-columns: ${props => `repeat(${props.cols}, 30px)`};
 `;

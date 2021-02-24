@@ -5,7 +5,7 @@ export interface CounterProps {
 }
 
 const StyledCounter = styled.div<{ generationCounter: number }>`
-  padding: 30px;
+  padding: 10px;
   grid-area: cnt;
   display: ${props => (props.generationCounter ? 'inline-grid' : 'none')};
   justify-content: center;
