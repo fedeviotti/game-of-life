@@ -18,12 +18,25 @@ const Toolbar: React.FC<ToolbarProps> = props => {
 
   return (
     <StyledToolbar>
-      <StyledButton onClick={toggleSimulation} running={props.running}>
+      <StyledButton
+        onClick={toggleSimulation}
+        running={props.running}
+        disabled={props.isGridEmpty}
+      >
         {props.running ? 'Stop' : 'Start'}
       </StyledButton>
-      <StyledButton onClick={speedUpSimulation}>Speed Up</StyledButton>
-      <StyledButton onClick={slowDownSimulation}>Slow Down</StyledButton>
-      <StyledButton onClick={clearSimulation}>Reset</StyledButton>
+      <StyledButton
+        onClick={speedUpSimulation}
+        disabled={props.isGridEmpty || props.simulationTimeout <= 0}
+      >
+        Speed Up
+      </StyledButton>
+      <StyledButton onClick={slowDownSimulation} disabled={props.isGridEmpty}>
+        Slow Down
+      </StyledButton>
+      <StyledButton onClick={clearSimulation} disabled={props.isGridEmpty}>
+        Reset
+      </StyledButton>
     </StyledToolbar>
   );
 };

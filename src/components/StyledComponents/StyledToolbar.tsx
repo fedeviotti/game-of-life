@@ -2,6 +2,8 @@ import styled from 'styled-components';
 
 export interface ToolbarProps {
   running: boolean;
+  isGridEmpty: boolean;
+  simulationTimeout: number;
   toggleSimulation: () => void;
   changeSpeedSimulation: (delta: number) => void;
   clearSimulation: (reloadLast: boolean) => void;

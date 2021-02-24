@@ -170,7 +170,9 @@ function App() {
         generationCounter={generationCounter}
       />
       <Toolbar
+        isGridEmpty={grid.length === 0}
         running={running}
+        simulationTimeout={simulationTimeout}
         toggleSimulation={toggleSimulation}
         changeSpeedSimulation={changeSpeedSimulation}
         clearSimulation={clearSimulation}

@@ -12,15 +12,18 @@ const StyledButton = styled.button<{ running?: boolean }>`
   width: 150px;
   padding: 10px 24px;
   margin: 10px;
-  cursor: pointer;
-  &:focus {
+  :focus {
     outline: none;
   }
-  &:hover {
+  :hover:not([disabled]) {
+    cursor: pointer;
     background-color: ${(props: any) =>
       props.running
         ? 'var(--color-secondary-dark)'
         : 'var(--color-primary-dark)'};
+  }
+  :disabled {
+    opacity: 0.4;
   }
 `;
 
