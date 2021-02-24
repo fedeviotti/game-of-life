@@ -4,6 +4,7 @@ export interface GridProps {
   rows: number;
   cols: number;
   grid: boolean[][];
+  generationCounter: number;
 }
 
 const StyledGrid = styled.div<{ cols: number; rows: number }>`

@@ -10,6 +10,8 @@ import Toolbar from './components/Toolbar/Toolbar';
 
 function App() {
   const [grid, setGrid] = useState<boolean[][]>([]);
+  const [generationCounter, setGenerationCounter] = useState<number>(0);
+  const [generationCounterInit, setGenerationCounterInit] = useState<number>(0);
   const [lastGrid, setLastGrid] = useState<boolean[][]>([]);
   const [totalRows, setTotalRows] = useState<number>(0);
   const [totalCols, setTotalCols] = useState<number>(0);
@@ -29,7 +31,7 @@ function App() {
   let cellToEvaluateNextGen: Set<string> = new Set<string>();
 
   const initGridFromFile = (
-    startingGeneration: number,
+    genCounter: number,
     rows: number,
     cols: number,
     gridFromFile: boolean[][]
@@ -38,6 +40,8 @@ function App() {
     setLastGrid(gridFromFile);
     setTotalRows(rows);
     setTotalCols(cols);
+    setGenerationCounter(genCounter);
+    setGenerationCounterInit(genCounter);
     // initialize cells to evaluate
     gridFromFile.forEach((row: boolean[], i: number) =>
       row.forEach((cell: boolean, k: number) => {
@@ -60,6 +64,8 @@ function App() {
   totalColsRef.current = totalCols;
   const simulationTimeoutRef = useRef(simulationTimeout);
   simulationTimeoutRef.current = simulationTimeout;
+  const generationCounterRef = useRef(generationCounter);
+  generationCounterRef.current = generationCounter;
 
   const addToCellsToEvaluate = (i: number, k: number, cellSet: Set<string>) => {
     cellSet.add(`${i}/${k}`);
@@ -122,6 +128,7 @@ function App() {
         setRunning(false);
       }
     });
+    setGenerationCounter(generationCounterRef.current + 1);
     setGrid(result);
 
     setTimeout(() => runSimulation(), simulationTimeoutRef.current);
@@ -139,6 +146,7 @@ function App() {
     setRunning(false);
     runningRef.current = false;
     setGrid(reloadLast ? lastGrid : []);
+    setGenerationCounter(reloadLast ? generationCounterInit : 0);
     cellsToEvaluate.clear();
     cellToEvaluateNextGen.clear();
   };
@@ -155,7 +163,12 @@ function App() {
         onInitGenLoaded={initGridFromFile}
         clearSimulation={clearSimulation}
       />
-      <Grid rows={totalRows} cols={totalCols} grid={grid} />
+      <Grid
+        rows={totalRows}
+        cols={totalCols}
+        grid={grid}
+        generationCounter={generationCounter}
+      />
       <Toolbar
         running={running}
         toggleSimulation={toggleSimulation}

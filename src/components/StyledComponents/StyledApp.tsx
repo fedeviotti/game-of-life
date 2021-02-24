@@ -10,6 +10,7 @@ const StyledApp = styled.div`
     'head head head head'
     'load load load load'
     '.    main main .   '
+    '.    cnt  cnt  .   '
     '.    tool tool .   '
     'foot foot foot foot';
 `;

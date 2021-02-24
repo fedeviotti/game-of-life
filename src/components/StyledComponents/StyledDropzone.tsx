@@ -22,7 +22,7 @@ const StyledDropzoneContainer = styled.div<{ isDragReject: any }>`
 
 export interface StyledDropzoneProps {
   onInitGenLoaded: (
-    startingGeneration: number,
+    generationCounter: number,
     rows: number,
     cols: number,
     grid: boolean[][]
@@ -42,13 +42,13 @@ const StyledDropzone: React.FC<StyledDropzoneProps> = props => {
         const binaryStr = String(reader.result);
         // Read the string and extract the values for initial state
         const [generation, rowsAndCols, ...grid] = binaryStr?.split(/\n/);
-        const generationNumber =
+        const generationCounter =
           Number(generation.slice(generation.indexOf(' ') + 1, -1)) | 0;
         const [rows, cols] = rowsAndCols.split(' ').map(el => Number(el) | 0);
         const initialGrid = grid.map<boolean[]>(row =>
           row.split('').map(value => value === '*')
         );
-        props.onInitGenLoaded(generationNumber, rows, cols, initialGrid);
+        props.onInitGenLoaded(generationCounter, rows, cols, initialGrid);
       };
       reader.readAsText(file);
     });
