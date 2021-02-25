@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { produce } from 'immer';
 
 import StyledDropzone from './components/StyledComponents/StyledDropzone';
@@ -29,6 +29,14 @@ function App() {
   ];
   let cellsToEvaluate: Set<string> = new Set<string>();
   let cellToEvaluateNextGen: Set<string> = new Set<string>();
+
+  useEffect(() => {
+    setDefaultGrid();
+  }, []);
+
+  const setDefaultGrid = () => {
+    console.log('default grid');
+  }
 
   const initGridFromFile = (
     genCounter: number,

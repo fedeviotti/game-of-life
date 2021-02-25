@@ -41,13 +41,17 @@ const StyledDropzone: React.FC<StyledDropzoneProps> = props => {
         props.clearSimulation(false);
         const binaryStr = String(reader.result);
         // Read the string and extract the values for initial state
-        const [generation, rowsAndCols, ...grid] = binaryStr?.split(/\n/);
+        const [generation, rowsAndCols, ...grid] = binaryStr?.split(/\r?\n/);
         const generationCounter =
           Number(generation.slice(generation.indexOf(' ') + 1, -1)) | 0;
         const [rows, cols] = rowsAndCols.split(' ').map(el => Number(el) | 0);
-        const initialGrid = grid.map<boolean[]>(row =>
+        const initialGrid = grid.filter(row => row.length).map<boolean[]>(row =>
           row.split('').map(value => value === '*')
         );
+        //console.log('generationCounter', generationCounter);
+        //console.log('rows', rows);
+        //console.log('cols', cols);
+        //console.log('initialGrid', initialGrid);
         props.onInitGenLoaded(generationCounter, rows, cols, initialGrid);
       };
       reader.readAsText(file);
