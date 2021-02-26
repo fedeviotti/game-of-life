@@ -43,7 +43,7 @@ const StyledDropzone: React.FC<StyledDropzoneProps> = props => {
         // Read the string and extract the values for initial state
         const [generation, rowsAndCols, ...grid] = binaryStr?.split(/\r?\n/);
         const generationCounter =
-          Number(generation.slice(generation.indexOf(' ') + 1, -1)) | 1;
+          Number(generation.slice(generation.indexOf(' ') + 1, -1)) | 0;
         const [rows, cols] = rowsAndCols.split(' ').map(el => Number(el) | 0);
         const initialGrid = grid
           .filter(row => row.length)

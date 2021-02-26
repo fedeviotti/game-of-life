@@ -1,7 +1,5 @@
-//export const defaultTotalRows = 16;
-//export const defaultTotalCols = 38;
-export const defaultTotalRows = 4;
-export const defaultTotalCols = 4;
+export const defaultTotalRows = 16;
+export const defaultTotalCols = 38;
 
 export const neighboursCoords = [
   [1, -1],

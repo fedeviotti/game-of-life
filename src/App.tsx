@@ -17,8 +17,8 @@ import {
 function App() {
   const initGrid = fillGrid(true);
   const [grid, setGrid] = useState<boolean[][]>(initGrid);
-  const [generationCounter, setGenerationCounter] = useState<number>(1);
-  const [generationCounterInit, setGenerationCounterInit] = useState<number>(1);
+  const [generationCounter, setGenerationCounter] = useState<number>(0);
+  const [generationCounterInit, setGenerationCounterInit] = useState<number>(0);
   const [lastGrid, setLastGrid] = useState<boolean[][]>(initGrid);
   const [totalRows, setTotalRows] = useState<number>(defaultTotalRows);
   const [totalCols, setTotalCols] = useState<number>(defaultTotalCols);
@@ -58,7 +58,7 @@ function App() {
       return;
     }
     console.log('Simulation is running...');
-
+    let again = false;
     const result = produce(gridRef.current, copyGrid => {
       gridRef.current.map((rows, i) => {
         rows.map((cell, k) => {
@@ -78,16 +78,24 @@ function App() {
               }
             }
           });
-          if (neighbours < 2 || neighbours > 3) {
+          if (gridRef.current[i][k] && (neighbours < 2 || neighbours > 3)) {
             copyGrid[i][k] = false;
+            again = true;
           } else if (!gridRef.current[i][k] && neighbours === 3) {
             copyGrid[i][k] = true;
+            again = true;
           }
         });
       });
     });
-    setGenerationCounter(generationCounterRef.current + 1);
-    setGrid(result);
+
+    // if nothing changed I can stop the loop, not increment the counter and not update the grid
+    if (!again) {
+      setRunning(false);
+    } else {
+      setGrid(result);
+      setGenerationCounter(generationCounterRef.current + 1);
+    }
 
     setTimeout(() => runSimulation(), simulationTimeoutRef.current);
   }, []);
@@ -121,7 +129,6 @@ function App() {
   };
 
   const toggleCell = (i: number, k: number) => {
-    console.log('cell clicked', i, k);
     const updatedGrid = produce(grid, copyGrid => {
       copyGrid[i][k] = !grid[i][k];
     });

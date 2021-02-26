@@ -14,7 +14,10 @@ const Toolbar: React.FC<ToolbarProps> = props => {
       >
         Speed Up
       </StyledButton>
-      <StyledButton onClick={() => props.onChangeSpeedSimulation(100)}>
+      <StyledButton
+        onClick={() => props.onChangeSpeedSimulation(100)}
+        disabled={props.simulationTimeout > 1000}
+      >
         Slow Down
       </StyledButton>
       <StyledButton

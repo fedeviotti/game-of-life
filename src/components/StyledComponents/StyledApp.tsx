@@ -2,8 +2,9 @@ import styled from 'styled-components';
 
 const StyledApp = styled.div`
   font-family: Roboto, sans-serif;
-  display: grid;
   min-height: 100vh;
+
+  display: grid;
   grid-template-columns: 50px 1fr 1fr 50px;
   grid-template-rows: auto auto 1fr auto auto;
   grid-template-areas:

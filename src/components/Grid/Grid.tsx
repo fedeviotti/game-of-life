@@ -26,8 +26,8 @@ const Grid: React.FC<GridProps> = props => {
           <div>Upload a template to start the game...</div>
         )}
       </StyledGrid>
-      {props.grid.length > 0 && props.generationCounter > 0 && (
-        <StyledCounter generationCounter={props.generationCounter}>
+      {props.grid.length > 0 && (
+        <StyledCounter>
           Generation counter: {props.generationCounter}
         </StyledCounter>
       )}

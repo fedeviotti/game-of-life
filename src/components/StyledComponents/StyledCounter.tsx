@@ -1,13 +1,10 @@
 import styled from 'styled-components';
 
-export interface CounterProps {
-  generationCounter: number;
-}
-
-const StyledCounter = styled.div<{ generationCounter: number }>`
+const StyledCounter = styled.div`
   padding: 10px;
+
+  display: inline-grid;
   grid-area: cnt;
-  display: ${props => (props.generationCounter ? 'inline-grid' : 'none')};
   justify-content: center;
 `;
 
