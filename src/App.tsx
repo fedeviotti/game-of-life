@@ -7,15 +7,21 @@ import StyledFooter from './components/StyledComponents/StyledFooter';
 import StyledApp from './components/StyledComponents/StyledApp';
 import Grid from './components/Grid/Grid';
 import Toolbar from './components/Toolbar/Toolbar';
-import { neighboursCoords } from './utils/utils';
+import {
+  neighboursCoords,
+  fillGrid,
+  defaultTotalRows,
+  defaultTotalCols,
+} from './utils/utils';
 
 function App() {
-  const [grid, setGrid] = useState<boolean[][]>([]);
-  const [generationCounter, setGenerationCounter] = useState<number>(0);
-  const [generationCounterInit, setGenerationCounterInit] = useState<number>(0);
-  const [lastGrid, setLastGrid] = useState<boolean[][]>([]);
-  const [totalRows, setTotalRows] = useState<number>(0);
-  const [totalCols, setTotalCols] = useState<number>(0);
+  const initGrid = fillGrid(true);
+  const [grid, setGrid] = useState<boolean[][]>(initGrid);
+  const [generationCounter, setGenerationCounter] = useState<number>(1);
+  const [generationCounterInit, setGenerationCounterInit] = useState<number>(1);
+  const [lastGrid, setLastGrid] = useState<boolean[][]>(initGrid);
+  const [totalRows, setTotalRows] = useState<number>(defaultTotalRows);
+  const [totalCols, setTotalCols] = useState<number>(defaultTotalCols);
   const [running, setRunning] = useState<boolean>(false);
   const [simulationTimeout, setSimulationTimeout] = useState<number>(200);
 
@@ -92,11 +98,11 @@ function App() {
     }
   };
 
-  const clearSimulation = (reloadLast: boolean) => {
+  const resetSimulation = () => {
     setRunning(false);
     runningRef.current = false;
-    setGrid(reloadLast ? lastGrid : []);
-    setGenerationCounter(reloadLast ? generationCounterInit : 0);
+    setGrid(lastGrid);
+    setGenerationCounter(generationCounterInit);
   };
 
   const changeSpeedSimulation = (delta: number) => {
@@ -109,7 +115,7 @@ function App() {
       <StyledHeader>Game of Life</StyledHeader>
       <StyledDropzone
         onInitGenLoaded={initGridFromFile}
-        clearSimulation={clearSimulation}
+        resetSimulation={resetSimulation}
       />
       <Grid
         rows={totalRows}
@@ -123,7 +129,7 @@ function App() {
         simulationTimeout={simulationTimeout}
         toggleSimulation={toggleSimulation}
         changeSpeedSimulation={changeSpeedSimulation}
-        clearSimulation={clearSimulation}
+        resetSimulation={resetSimulation}
       />
       <StyledFooter>Enjoy</StyledFooter>
     </StyledApp>

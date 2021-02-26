@@ -6,7 +6,7 @@ export interface ToolbarProps {
   simulationTimeout: number;
   toggleSimulation: () => void;
   changeSpeedSimulation: (delta: number) => void;
-  clearSimulation: (reloadLast: boolean) => void;
+  resetSimulation: () => void;
 }
 
 const StyledToolbar = styled.div`

@@ -27,7 +27,7 @@ export interface StyledDropzoneProps {
     cols: number,
     grid: boolean[][]
   ) => void;
-  clearSimulation: (reloadLast: boolean) => void;
+  resetSimulation: () => void;
 }
 
 const StyledDropzone: React.FC<StyledDropzoneProps> = props => {
@@ -38,16 +38,16 @@ const StyledDropzone: React.FC<StyledDropzoneProps> = props => {
       reader.onabort = () => console.log('file reading was aborted');
       reader.onerror = () => console.log('file reading has failed');
       reader.onload = () => {
-        props.clearSimulation(false);
+        props.resetSimulation();
         const binaryStr = String(reader.result);
         // Read the string and extract the values for initial state
         const [generation, rowsAndCols, ...grid] = binaryStr?.split(/\r?\n/);
         const generationCounter =
-          Number(generation.slice(generation.indexOf(' ') + 1, -1)) | 0;
+          Number(generation.slice(generation.indexOf(' ') + 1, -1)) | 1;
         const [rows, cols] = rowsAndCols.split(' ').map(el => Number(el) | 0);
-        const initialGrid = grid.filter(row => row.length).map<boolean[]>(row =>
-          row.split('').map(value => value === '*')
-        );
+        const initialGrid = grid
+          .filter(row => row.length)
+          .map<boolean[]>(row => row.split('').map(value => value === '*'));
         //console.log('generationCounter', generationCounter);
         //console.log('rows', rows);
         //console.log('cols', cols);

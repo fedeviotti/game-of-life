@@ -3,23 +3,17 @@ import StyledButton from '../StyledComponents/StyledButton';
 import StyledToolbar, { ToolbarProps } from '../StyledComponents/StyledToolbar';
 
 const Toolbar: React.FC<ToolbarProps> = props => {
-  const toggleSimulation = () => {
-    props.toggleSimulation();
-  };
   const speedUpSimulation = () => {
     props.changeSpeedSimulation(-100);
   };
   const slowDownSimulation = () => {
     props.changeSpeedSimulation(100);
   };
-  const clearSimulation = () => {
-    props.clearSimulation(true);
-  };
 
   return (
     <StyledToolbar>
       <StyledButton
-        onClick={toggleSimulation}
+        onClick={props.toggleSimulation}
         running={props.running}
         disabled={props.isGridEmpty}
       >
@@ -34,7 +28,10 @@ const Toolbar: React.FC<ToolbarProps> = props => {
       <StyledButton onClick={slowDownSimulation} disabled={props.isGridEmpty}>
         Slow Down
       </StyledButton>
-      <StyledButton onClick={clearSimulation} disabled={props.isGridEmpty}>
+      <StyledButton
+        onClick={props.resetSimulation}
+        disabled={props.isGridEmpty}
+      >
         Reset
       </StyledButton>
     </StyledToolbar>
