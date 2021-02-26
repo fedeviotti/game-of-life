@@ -98,10 +98,18 @@ function App() {
     }
   };
 
-  const resetSimulation = () => {
+  const resetSimulation = (clear: boolean = false, random: boolean = false) => {
     setRunning(false);
     runningRef.current = false;
-    setGrid(lastGrid);
+    if (clear || random) {
+      const newGrid = fillGrid(random, totalRows, totalCols);
+      setGrid(newGrid);
+      if (random) {
+        setLastGrid(newGrid);
+      }
+    } else {
+      setGrid(lastGrid);
+    }
     setGenerationCounter(generationCounterInit);
   };
 
@@ -124,7 +132,6 @@ function App() {
         generationCounter={generationCounter}
       />
       <Toolbar
-        isGridEmpty={grid.length === 0}
         running={running}
         simulationTimeout={simulationTimeout}
         toggleSimulation={toggleSimulation}

@@ -2,11 +2,10 @@ import styled from 'styled-components';
 
 export interface ToolbarProps {
   running: boolean;
-  isGridEmpty: boolean;
   simulationTimeout: number;
   toggleSimulation: () => void;
   changeSpeedSimulation: (delta: number) => void;
-  resetSimulation: () => void;
+  resetSimulation: (clear?: boolean, random?: boolean) => void;
 }
 
 const StyledToolbar = styled.div`
@@ -17,7 +16,7 @@ const StyledToolbar = styled.div`
   justify-content: center;
   display: inline-grid;
   grid-template-rows: 100%;
-  grid-template-columns: repeat(4, 200px);
+  grid-template-columns: repeat(6, 200px);
 `;
 
 export default StyledToolbar;

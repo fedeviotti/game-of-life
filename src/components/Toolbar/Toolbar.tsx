@@ -3,36 +3,37 @@ import StyledButton from '../StyledComponents/StyledButton';
 import StyledToolbar, { ToolbarProps } from '../StyledComponents/StyledToolbar';
 
 const Toolbar: React.FC<ToolbarProps> = props => {
-  const speedUpSimulation = () => {
-    props.changeSpeedSimulation(-100);
-  };
-  const slowDownSimulation = () => {
-    props.changeSpeedSimulation(100);
-  };
-
   return (
     <StyledToolbar>
-      <StyledButton
-        onClick={props.toggleSimulation}
-        running={props.running}
-        disabled={props.isGridEmpty}
-      >
+      <StyledButton onClick={props.toggleSimulation} running={props.running}>
         {props.running ? 'Stop' : 'Start'}
       </StyledButton>
       <StyledButton
-        onClick={speedUpSimulation}
-        disabled={props.isGridEmpty || props.simulationTimeout <= 0}
+        onClick={() => props.changeSpeedSimulation(-100)}
+        disabled={props.simulationTimeout <= 0}
       >
         Speed Up
       </StyledButton>
-      <StyledButton onClick={slowDownSimulation} disabled={props.isGridEmpty}>
+      <StyledButton onClick={() => props.changeSpeedSimulation(100)}>
         Slow Down
       </StyledButton>
       <StyledButton
-        onClick={props.resetSimulation}
-        disabled={props.isGridEmpty}
+        onClick={() => props.resetSimulation(false, true)}
+        disabled={props.running}
+      >
+        Randomize
+      </StyledButton>
+      <StyledButton
+        onClick={() => props.resetSimulation()}
+        disabled={props.running}
       >
         Reset
+      </StyledButton>
+      <StyledButton
+        onClick={() => props.resetSimulation(true)}
+        disabled={props.running}
+      >
+        Clear
       </StyledButton>
     </StyledToolbar>
   );
