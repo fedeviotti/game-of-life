@@ -39,6 +39,7 @@ function App() {
     setGenerationCounterInit(genCounter);
   };
 
+  // Reference to use inside useCallback
   const runningRef = useRef(running);
   runningRef.current = running;
   const gridRef = useRef(grid);
@@ -62,6 +63,7 @@ function App() {
       gridRef.current.map((rows, i) => {
         rows.map((cell, k) => {
           let neighbours = 0;
+          // calculating the neighbours numbers
           neighboursCoords.forEach(([x, y]) => {
             const ii = i + x;
             const kk = k + y;
@@ -118,25 +120,36 @@ function App() {
     setSimulationTimeout(() => delta + simulationTimeout);
   };
 
+  const toggleCell = (i: number, k: number) => {
+    console.log('cell clicked', i, k);
+    const updatedGrid = produce(grid, copyGrid => {
+      copyGrid[i][k] = !grid[i][k];
+    });
+    setGrid(updatedGrid);
+    setLastGrid(updatedGrid);
+  };
+
   return (
     <StyledApp>
       <StyledHeader>Game of Life</StyledHeader>
       <StyledDropzone
         onInitGenLoaded={initGridFromFile}
-        resetSimulation={resetSimulation}
+        onResetSimulation={resetSimulation}
       />
       <Grid
+        running={running}
         rows={totalRows}
         cols={totalCols}
         grid={grid}
         generationCounter={generationCounter}
+        onToggleCell={toggleCell}
       />
       <Toolbar
         running={running}
         simulationTimeout={simulationTimeout}
-        toggleSimulation={toggleSimulation}
-        changeSpeedSimulation={changeSpeedSimulation}
-        resetSimulation={resetSimulation}
+        onToggleSimulation={toggleSimulation}
+        onChangeSpeedSimulation={changeSpeedSimulation}
+        onResetSimulation={resetSimulation}
       />
       <StyledFooter>Enjoy</StyledFooter>
     </StyledApp>

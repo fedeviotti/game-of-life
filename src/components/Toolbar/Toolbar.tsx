@@ -5,32 +5,32 @@ import StyledToolbar, { ToolbarProps } from '../StyledComponents/StyledToolbar';
 const Toolbar: React.FC<ToolbarProps> = props => {
   return (
     <StyledToolbar>
-      <StyledButton onClick={props.toggleSimulation} running={props.running}>
+      <StyledButton onClick={props.onToggleSimulation} running={props.running}>
         {props.running ? 'Stop' : 'Start'}
       </StyledButton>
       <StyledButton
-        onClick={() => props.changeSpeedSimulation(-100)}
+        onClick={() => props.onChangeSpeedSimulation(-100)}
         disabled={props.simulationTimeout <= 0}
       >
         Speed Up
       </StyledButton>
-      <StyledButton onClick={() => props.changeSpeedSimulation(100)}>
+      <StyledButton onClick={() => props.onChangeSpeedSimulation(100)}>
         Slow Down
       </StyledButton>
       <StyledButton
-        onClick={() => props.resetSimulation(false, true)}
+        onClick={() => props.onResetSimulation(false, true)}
         disabled={props.running}
       >
         Randomize
       </StyledButton>
       <StyledButton
-        onClick={() => props.resetSimulation()}
+        onClick={() => props.onResetSimulation()}
         disabled={props.running}
       >
         Reset
       </StyledButton>
       <StyledButton
-        onClick={() => props.resetSimulation(true)}
+        onClick={() => props.onResetSimulation(true)}
         disabled={props.running}
       >
         Clear

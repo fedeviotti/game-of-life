@@ -10,7 +10,16 @@ const Grid: React.FC<GridProps> = props => {
         {props.grid.length ? (
           props.grid.map((row: boolean[], i: number) =>
             row.map((value: boolean, k: number) => {
-              return <CellGrid key={`${i}-${k}`} alive={value} i={i} k={k} />;
+              return (
+                <CellGrid
+                  key={`${i}-${k}`}
+                  alive={value}
+                  i={i}
+                  k={k}
+                  running={props.running}
+                  onToggleCell={props.onToggleCell}
+                />
+              );
             })
           )
         ) : (

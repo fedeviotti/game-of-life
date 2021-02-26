@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 
 export interface GridProps {
+  running: boolean;
   rows: number;
   cols: number;
   grid: boolean[][];
   generationCounter: number;
+  onToggleCell: (i: number, k: number) => void;
 }
 
 const StyledGrid = styled.div<{ cols: number; rows: number }>`

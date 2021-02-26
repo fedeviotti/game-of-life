@@ -3,9 +3,9 @@ import styled from 'styled-components';
 export interface ToolbarProps {
   running: boolean;
   simulationTimeout: number;
-  toggleSimulation: () => void;
-  changeSpeedSimulation: (delta: number) => void;
-  resetSimulation: (clear?: boolean, random?: boolean) => void;
+  onToggleSimulation: () => void;
+  onChangeSpeedSimulation: (delta: number) => void;
+  onResetSimulation: (clear?: boolean, random?: boolean) => void;
 }
 
 const StyledToolbar = styled.div`
