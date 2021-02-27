@@ -1,4 +1,18 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const circleGrow = keyframes`
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(5);
+    opacity: 0;
+  }
+`;
 
 const StyledButtonLabel = styled.span`
   display: block;
@@ -44,20 +58,7 @@ const StyledButton = styled.button<{ running?: boolean }>`
     opacity: 0.4;
   }
   :focus:not(:active) span::after {
-    animation: circleGrow 0.3s linear;
-  }
-  @keyframes circleGrow {
-    0% {
-      transform: scale(0);
-      opacity: 0;
-    }
-    20% {
-      opacity: 1;
-    }
-    100% {
-      transform: scale(5);
-      opacity: 0;
-    }
+    animation: ${circleGrow} 0.3s linear;
   }
 `;
 
