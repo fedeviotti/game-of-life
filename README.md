@@ -13,13 +13,13 @@ Nella root del progetto ho incluso alcuni file con schemi iniziali di esempio. I
 ## Funzionalità
 
 ### Bottone Start/Stop
-Permette di avviare/stoppare la simulazione
+Permette di avviare/stoppare la simulazione.
 
 ### Bottoni Speed Up/Slow Down
 Permette di aumentare/diminuire la velocità di simulazione. L'intervallo può andare da 0 a 1 secondo.
 
 ### Bottone Randomize
-Genera un nuovo schema randomico nella griglia (con le dimensioni attuali)
+Genera un nuovo schema randomico nella griglia (con le dimensioni attuali).
 
 ### Bottone Reset
 Ricarica l'ultimo schema caricato, sia esso random, caricato da file o modificato manualmente dall'utente.
@@ -37,8 +37,8 @@ Con il click si modifica lo stato della cella.
 
 ### `npm run start`
 
-Per avviare il programma in locale
+Per avviare il programma in locale.
 
-##Deploy
+## Deploy
 
-La versione deployata del programma si trova al seguente [link](http://gameoflife.fedeviotti.com.s3-website.eu-south-1.amazonaws.com/)
+La versione deployata del programma si trova al seguente [link](http://gameoflife.fedeviotti.com.s3-website.eu-south-1.amazonaws.com/).
