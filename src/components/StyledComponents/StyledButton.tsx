@@ -57,7 +57,7 @@ const StyledButton = styled.button<{ running?: boolean }>`
   :disabled {
     opacity: 0.4;
   }
-  :focus:not(:active) span::after {
+  :focus:not(:active) ${StyledButtonLabel}::after {
     animation: ${circleGrow} 0.3s linear;
   }
 `;
