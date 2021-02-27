@@ -57,7 +57,7 @@ function App() {
     if (!runningRef.current) {
       return;
     }
-    console.log('Simulation is running...');
+    //console.log('Simulation is running...');
     let again = false;
     const result = produce(gridRef.current, copyGrid => {
       gridRef.current.map((rows, i) => {
