@@ -15,6 +15,9 @@ Nella root del progetto ho incluso alcuni file con schemi iniziali di esempio. I
 ### Bottone Start/Stop
 Permette di avviare/stoppare la simulazione.
 
+### Bottone Next
+Permette di avviare una singola simulazione per volta.
+
 ### Bottoni Speed Up/Slow Down
 Permette di aumentare/diminuire la velocità di simulazione. L'intervallo può andare da 0 a 1 secondo.
 
