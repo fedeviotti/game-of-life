@@ -5,8 +5,17 @@ import StyledToolbar, { ToolbarProps } from '../StyledComponents/StyledToolbar';
 const Toolbar: React.FC<ToolbarProps> = props => {
   return (
     <StyledToolbar>
-      <StyledButton onClick={props.onToggleSimulation} running={props.running}>
+      <StyledButton
+        onClick={() => props.onToggleSimulation()}
+        running={props.running}
+      >
         {props.running ? 'Stop' : 'Start'}
+      </StyledButton>
+      <StyledButton
+        onClick={() => props.onToggleSimulation(true)}
+        disabled={props.running}
+      >
+        Next
       </StyledButton>
       <StyledButton
         onClick={() => props.onChangeSpeedSimulation(-100)}

@@ -10,6 +10,8 @@ export interface GridProps {
 }
 
 const StyledGrid = styled.div<{ cols: number; rows: number }>`
+  margin: 25px;
+
   display: inline-grid;
   grid-area: main;
   justify-content: center;

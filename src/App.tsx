@@ -53,7 +53,7 @@ function App() {
   const generationCounterRef = useRef(generationCounter);
   generationCounterRef.current = generationCounter;
 
-  const runSimulation = useCallback(() => {
+  const runSimulation = useCallback((runOnce: boolean = false) => {
     if (!runningRef.current) {
       return;
     }
@@ -93,6 +93,10 @@ function App() {
     if (!again) {
       setRunning(false);
     } else {
+      // if runOnce is true I stop the loop
+      if (runOnce) {
+        setRunning(false);
+      }
       setGrid(result);
       setGenerationCounter(generationCounterRef.current + 1);
     }
@@ -100,11 +104,11 @@ function App() {
     setTimeout(() => runSimulation(), simulationTimeoutRef.current);
   }, []);
 
-  const toggleSimulation = () => {
+  const toggleSimulation = (runOnce: boolean = false) => {
     setRunning(!running);
     if (!running) {
       runningRef.current = true;
-      runSimulation();
+      runSimulation(runOnce);
     }
   };
 
