@@ -1,5 +1,8 @@
 import React from 'react';
-import StyledButton from '../StyledComponents/StyledButton';
+import {
+  StyledButton,
+  StyledButtonLabel,
+} from '../StyledComponents/StyledButton';
 import StyledToolbar, { ToolbarProps } from '../StyledComponents/StyledToolbar';
 
 const Toolbar: React.FC<ToolbarProps> = props => {
@@ -9,43 +12,45 @@ const Toolbar: React.FC<ToolbarProps> = props => {
         onClick={() => props.onToggleSimulation()}
         running={props.running}
       >
-        {props.running ? 'Stop' : 'Start'}
+        <StyledButtonLabel>
+          {props.running ? 'Stop' : 'Start'}
+        </StyledButtonLabel>
       </StyledButton>
       <StyledButton
         onClick={() => props.onToggleSimulation(true)}
         disabled={props.running}
       >
-        Next
+        <StyledButtonLabel>Next</StyledButtonLabel>
       </StyledButton>
       <StyledButton
         onClick={() => props.onChangeSpeedSimulation(-100)}
         disabled={props.simulationTimeout <= 0}
       >
-        Speed Up
+        <StyledButtonLabel>Speed Up</StyledButtonLabel>
       </StyledButton>
       <StyledButton
         onClick={() => props.onChangeSpeedSimulation(100)}
         disabled={props.simulationTimeout > 1000}
       >
-        Slow Down
+        <StyledButtonLabel>Slow Down</StyledButtonLabel>
       </StyledButton>
       <StyledButton
         onClick={() => props.onResetSimulation(false, true)}
         disabled={props.running}
       >
-        Randomize
+        <StyledButtonLabel>Randomize</StyledButtonLabel>
       </StyledButton>
       <StyledButton
         onClick={() => props.onResetSimulation()}
         disabled={props.running}
       >
-        Reset
+        <StyledButtonLabel>Reset</StyledButtonLabel>
       </StyledButton>
       <StyledButton
         onClick={() => props.onResetSimulation(true)}
         disabled={props.running}
       >
-        Clear
+        <StyledButtonLabel>Clear</StyledButtonLabel>
       </StyledButton>
     </StyledToolbar>
   );
